@@ -1,8 +1,7 @@
 import requests
 import json
 from pprint import pprint
-
-from requests import Response
+from ydx_token import ydx_token as token
 
 
 class DogImage:
@@ -34,7 +33,8 @@ class DogImage:
                 response = requests.get(url)
                 data = response.json()
                 if response.status_code != 200:
-                    print(f"Ошибка загрузки картинки для {sub_breed}")
+                    print(f"Ошибка загрузки картинки для {self.breed}")
+                    break
                 else:
                     image_urls_list.append(data["message"])
         else:
@@ -97,7 +97,7 @@ class DogImage:
         """Сохраняем результат в формате json"""
         file = f"{self.breed}_results.json"
         with open(file, "w", encoding="utf-8") as f:
-            json.dump(self.results, f, ensure_ascii=False)
+            json.dump(self.results, f, ensure_ascii=False, indent=2)
 
         print("Успех")
 
@@ -120,9 +120,13 @@ class DogImage:
         self.save_result_json()
         print("загружено в json")
 
+def input_data():
+    ydx_token = token
+    # ydx_token = input("Введите токен Яндекса: ")
+    breed = input("Введите пароду собаки: ")
+    run = DogImage(breed, ydx_token=ydx_token)
+    run.start()
 
 if __name__ == '__main__':
-    ydx_token = "y0__xCf1JaNCBjx0jgg9JGY1xMwnoe7oQiP0mZWah5_aI3ZaR7yclOJ1c57yw"
-    breed = "spaniel"
-    run = DogImage(breed, ydx_token)
-    run.start()
+    input_data()
+
